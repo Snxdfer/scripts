@@ -1,6 +1,6 @@
--- chat bypass
+--fun when it lasted.
 
--- Groq API Key; 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
+-- chat bypass
 
 local v0 = string.char;
 local v1 = string.byte;
