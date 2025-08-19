@@ -1831,7 +1831,7 @@ local function NYMIRF_fake_script() -- ScriptHub.ScriptHubScript
 			Script = GetScript("Dark-Dex-Explorer"),
 			Author = "LorekeeperZinnia",
 			Description = "Debugging suite designed to find any potential vulnerabilities on a game.",
-			Image = GetImage("Dark-Dex-Explorer", "https://i.imgur.com/a/ZMWoBUB.png")
+			Image = GetImage("Dark-Dex-Explorer", "https://i.imgur.com/LnBPoVI.png")
 		},
 		{
 			Name = "Hydroxide",
@@ -1866,14 +1866,14 @@ local function NYMIRF_fake_script() -- ScriptHub.ScriptHubScript
 			Script = GetScript("SimpleSpy2.2"),
 			Author = "exx/Frosty",
 			Description = "SimpleSpy is a lightweight penetration testing tool that logs remote calls.",
-			Image = GetImage("SimpleSpy2.2", "https://i.imgur.com/a/DgkS2hT.png")
+			Image = GetImage("SimpleSpy2.2", "https://i.imgur.com/Ao7svVa.png")
 		},
 		{
 			Name = "Simple Spy V3",
 			Script = GetScript("SimpleSpyV3"),
 			Author = "78n",
 			Description = "SimpleSpy is a lightweight penetration testing tool that logs remote calls.",
-			Image = GetImage("SimpleSpyV3", "https://i.imgur.com/a/e5ReE57.png")
+			Image = GetImage("SimpleSpyV3", "https://i.imgur.com/d37WGUQ.png")
 		}
 	}
 	
