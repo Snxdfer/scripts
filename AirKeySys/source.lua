@@ -20,13 +20,14 @@ function createObject(className, properties)
 end
 
 function WhitelistCreate(titleText, descriptionText, linkValue)
-	local existingGui = game.CoreGui:FindFirstChild("Rnd") and game.CoreGui:FindFirstChild("Rnd"):Destroy()
-	local mainGui = createObject("ScreenGui", {
+	local oldGui = game.CoreGui:FindFirstChild("Rnd") and game.CoreGui:FindFirstChild("Rnd"):Destroy()
+	local screenGui = createObject("ScreenGui", {
 		Name = "Rnd",
 		Parent = game.CoreGui,
 	})
+
 	local mainFrame = createObject("Frame", {
-		Parent = mainGui,
+		Parent = screenGui,
 		ClipsDescendants = true,
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		BackgroundColor3 = Color3.fromRGB(27, 27, 27),
@@ -82,6 +83,16 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 		Texture = "http://www.roblox.com/asset/?id=277037193",
 	})
 
+	local backgroundImage = createObject("ImageLabel", {
+		Parent = mainFrame,
+		BackgroundTransparency = 1,
+		Position = UDim2.new(0, 0, 0.432, 0),
+		Size = UDim2.new(0, 326, 0, 130),
+		Image = "http://www.roblox.com/asset/?id=277037193",
+		ImageTransparency = 0.93,
+	})
+	createObject("UICorner", { Parent = backgroundImage })
+
 	local loginButton = createObject("TextButton", {
 		Parent = mainFrame,
 		BackgroundColor3 = Color3.fromRGB(91, 161, 78),
@@ -96,6 +107,13 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 		},
 		Text = "LOGIN",
 		TextColor3 = Color3.fromRGB(255, 255, 255),
+	})
+	createObject("UIStroke", {
+		Parent = loginButton,
+		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		Color = Color3.fromRGB(115, 238, 101),
+		LineJoinMode = Enum.LineJoinMode.Miter,
+		Thickness = 0.7,
 	})
 
 	local keyBox = createObject("TextBox", {
@@ -115,6 +133,40 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 		TextSize = 10,
 		TextXAlignment = Enum.TextXAlignment.Left,
 	})
+	createObject("UIStroke", {
+		Parent = keyBox,
+		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		Color = Color3.fromRGB(99, 99, 99),
+		LineJoinMode = Enum.LineJoinMode.Miter,
+		Thickness = 0.7,
+	})
+	createObject("UIPadding", {
+		Parent = keyBox,
+		PaddingLeft = UDim.new(0, 9),
+	})
+
+	local cancelButton = createObject("TextButton", {
+		Parent = mainFrame,
+		BackgroundColor3 = Color3.fromRGB(153, 88, 88),
+		Position = UDim2.new(0.064, 0, 0.834, 0),
+		Size = UDim2.new(0, 63, 0, 21),
+		AutoButtonColor = false,
+		Font = Enum.Font.Gotham,
+		FontFace = fontFix{
+			Family = "rbxasset://fonts/families/GothamSSm.json",
+			Weight = Enum.FontWeight.Regular,
+			Style = Enum.FontStyle.Normal
+		},
+		Text = "CANCEL",
+		TextColor3 = Color3.fromRGB(255, 255, 255),
+	})
+	createObject("UIStroke", {
+		Parent = cancelButton,
+		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		Color = Color3.fromRGB(255, 151, 151),
+		LineJoinMode = Enum.LineJoinMode.Miter,
+		Thickness = 0.7,
+	})
 
 	local function tweenObject(object, easingStyle, time, easingDirection, properties)
 		game.TweenService:Create(object, TweenInfo.new(time, easingStyle, easingDirection), properties):Play()
@@ -125,9 +177,7 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 		return httpRequest({
 			Url = url,
 			Method = "GET",
-			Headers = {
-				["Content-Type"] = "application/json"
-			},
+			Headers = { ["Content-Type"] = "application/json" },
 		}).Body
 	end
 
@@ -151,7 +201,7 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 			Size = UDim2.new(0, 0, 0, 0)
 		})
 		wait(0.3)
-		mainGui:Destroy()
+		screenGui:Destroy()
 	end
 
 	tweenObject(mainFrame, Enum.EasingStyle.Circular, 0.3, Enum.EasingDirection.Out, {
@@ -170,6 +220,11 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 		else
 			playSound(654933750)
 		end
+	end)
+
+	cancelButton.MouseButton1Down:Connect(function()
+		playSound(1524543584)
+		closeGui()
 	end)
 end
 
