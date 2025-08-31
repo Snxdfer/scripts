@@ -1,33 +1,37 @@
 -- By 00Fazee 31/08/2025
 -- Air Key System v1.1 (Fixed)
 
-function fontFix(fontData)
-	return Font.new(fontData.Family, fontData.Weight, fontData.Style)
+function fontFix(arg)
+	return Font.new(arg.Family, arg.Weight, arg.Style)
 end
 
 function createObject(className, properties)
-	local instance = Instance.new(className)
-	local parent
-	for property, value in pairs(properties) do
-		if property ~= "Parent" then
-			instance[property] = value
+	local obj = Instance.new(className)
+	local parentObj
+	for propName, propValue in pairs(properties) do
+		if propName ~= "Parent" then
+			obj[propName] = propValue
 		else
-			parent = value
+			parentObj = propValue
 		end
 	end
-	instance.Parent = parent
-	return instance
+	obj.Parent = parentObj
+	return obj
 end
 
-function WhitelistCreate(titleText, descriptionText, linkValue)
-	local oldGui = game.CoreGui:FindFirstChild("Rnd") and game.CoreGui:FindFirstChild("Rnd"):Destroy()
-	local screenGui = createObject("ScreenGui", {
+function WhitelistCreate(titleText, descText, clipboardText)
+	local existingGui = game.CoreGui:FindFirstChild('Rnd')
+	if existingGui then
+		existingGui:Destroy()
+	end
+
+	local mainGui = createObject("ScreenGui", {
 		Name = "Rnd",
 		Parent = game.CoreGui,
 	})
 
 	local mainFrame = createObject("Frame", {
-		Parent = screenGui,
+		Parent = mainGui,
 		ClipsDescendants = true,
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		BackgroundColor3 = Color3.fromRGB(27, 27, 27),
@@ -36,8 +40,10 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 		Position = UDim2.new(0.5, 0, 0.5, 0),
 		Size = UDim2.new(0, 0, 0, 0),
 	})
-	createObject("UICorner", { Parent = mainFrame })
-	createObject("UIStroke", {
+
+	local mainFrameCorner = createObject("UICorner", {Parent = mainFrame})
+
+	local mainFrameStroke = createObject("UIStroke", {
 		Parent = mainFrame,
 		Thickness = 3.8,
 		Transparency = 0.9,
@@ -45,8 +51,11 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 
 	local titleLabel = createObject("TextLabel", {
 		Parent = mainFrame,
+		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BackgroundTransparency = 1,
-		Position = UDim2.new(0.064, 0, 0.083, 0),
+		BorderColor3 = Color3.fromRGB(0, 0, 0),
+		BorderSizePixel = 0,
+		Position = UDim2.new(0.0644, 0, 0.0829, 0),
 		Size = UDim2.new(0, 187, 0, 18),
 		Font = Enum.Font.Gotham,
 		FontFace = fontFix{
@@ -60,10 +69,13 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 		TextXAlignment = Enum.TextXAlignment.Left,
 	})
 
-	local descriptionLabel = createObject("TextLabel", {
+	local descLabel = createObject("TextLabel", {
 		Parent = mainFrame,
+		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BackgroundTransparency = 1,
-		Position = UDim2.new(0.064, 0, 0.162, 0),
+		BorderColor3 = Color3.fromRGB(0, 0, 0),
+		BorderSizePixel = 0,
+		Position = UDim2.new(0.0644, 0, 0.1615, 0),
 		Size = UDim2.new(0, 270, 0, 11),
 		Font = Enum.Font.Gotham,
 		FontFace = fontFix{
@@ -71,32 +83,39 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 			Weight = Enum.FontWeight.Regular,
 			Style = Enum.FontStyle.Normal
 		},
-		Text = descriptionText or "A simple key system using work.ink",
+		Text = descText or "A simple key system using work.ink",
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 		TextSize = 10,
 		TextTransparency = 0.47,
 		TextXAlignment = Enum.TextXAlignment.Left,
 	})
-	createObject("Decal", {
+
+	local whiteGradient = createObject("Decal", {
 		Name = "White Gradient",
-		Parent = descriptionLabel,
+		Parent = descLabel,
 		Texture = "http://www.roblox.com/asset/?id=277037193",
 	})
 
-	local backgroundImage = createObject("ImageLabel", {
+	local mainImage = createObject("ImageLabel", {
 		Parent = mainFrame,
+		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BackgroundTransparency = 1,
-		Position = UDim2.new(0, 0, 0.432, 0),
+		BorderColor3 = Color3.fromRGB(0, 0, 0),
+		BorderSizePixel = 0,
+		Position = UDim2.new(0, 0, 0.4323, 0),
 		Size = UDim2.new(0, 326, 0, 130),
 		Image = "http://www.roblox.com/asset/?id=277037193",
 		ImageTransparency = 0.93,
 	})
-	createObject("UICorner", { Parent = backgroundImage })
+
+	local mainImageCorner = createObject("UICorner", {Parent = mainImage})
 
 	local loginButton = createObject("TextButton", {
 		Parent = mainFrame,
 		BackgroundColor3 = Color3.fromRGB(91, 161, 78),
-		Position = UDim2.new(0.064, 0, 0.401, 0),
+		BorderColor3 = Color3.fromRGB(0, 0, 0),
+		BorderSizePixel = 0,
+		Position = UDim2.new(0.064, 0, 0.4015, 0),
 		Size = UDim2.new(0, 63, 0, 21),
 		AutoButtonColor = false,
 		Font = Enum.Font.Gotham,
@@ -105,10 +124,12 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 			Weight = Enum.FontWeight.Regular,
 			Style = Enum.FontStyle.Normal
 		},
+		RichText = true,
 		Text = "LOGIN",
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 	})
-	createObject("UIStroke", {
+
+	local loginButtonStroke = createObject("UIStroke", {
 		Parent = loginButton,
 		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 		Color = Color3.fromRGB(115, 238, 101),
@@ -116,11 +137,30 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 		Thickness = 0.7,
 	})
 
-	local keyBox = createObject("TextBox", {
+	local adjustButton = createObject("ImageButton", {
+		Name = "adjust",
+		Parent = loginButton,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundTransparency = 1,
+		LayoutOrder = 6,
+		Position = UDim2.new(0.936, 0, 0.5, 0),
+		Size = UDim2.new(0, 10, 0, 10),
+		ZIndex = 2,
+		Image = "rbxassetid://3926307971",
+		ImageRectOffset = Vector2.new(444, 324),
+		ImageRectSize = Vector2.new(36, 36),
+	})
+
+	local loginButtonPadding = createObject("UIPadding", {Parent = loginButton, PaddingRight = UDim.new(0, 10)})
+
+	local keyInput = createObject("TextBox", {
 		Parent = mainFrame,
 		BackgroundColor3 = Color3.fromRGB(61, 61, 61),
-		Position = UDim2.new(0.064, 0, 0.266, 0),
+		BorderColor3 = Color3.fromRGB(0, 0, 0),
+		BorderSizePixel = 0,
+		Position = UDim2.new(0.0644, 0, 0.2664, 0),
 		Size = UDim2.new(0, 235, 0, 21),
+		CursorPosition = -1,
 		Font = Enum.Font.SourceSans,
 		FontFace = fontFix{
 			Family = "rbxasset://fonts/families/SourceSansPro.json",
@@ -133,22 +173,80 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 		TextSize = 10,
 		TextXAlignment = Enum.TextXAlignment.Left,
 	})
-	createObject("UIStroke", {
-		Parent = keyBox,
+
+	local keyInputStroke = createObject("UIStroke", {
+		Parent = keyInput,
 		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 		Color = Color3.fromRGB(99, 99, 99),
 		LineJoinMode = Enum.LineJoinMode.Miter,
 		Thickness = 0.7,
 	})
-	createObject("UIPadding", {
-		Parent = keyBox,
-		PaddingLeft = UDim.new(0, 9),
+
+	local keyInputPadding = createObject("UIPadding", {Parent = keyInput, PaddingLeft = UDim.new(0, 9)})
+
+	local getLinkButton = createObject("TextButton", {
+		Parent = mainFrame,
+		BackgroundColor3 = Color3.fromRGB(83, 145, 162),
+		BorderColor3 = Color3.fromRGB(0, 0, 0),
+		BorderSizePixel = 0,
+		Position = UDim2.new(0.2941, 0, 0.4015, 0),
+		Size = UDim2.new(0, 84, 0, 21),
+		AutoButtonColor = false,
+		Font = Enum.Font.Gotham,
+		FontFace = fontFix{
+			Family = "rbxasset://fonts/families/GothamSSm.json",
+			Weight = Enum.FontWeight.Regular,
+			Style = Enum.FontStyle.Normal
+		},
+		RichText = true,
+		Text = "GET LINK",
+		TextColor3 = Color3.fromRGB(255, 255, 255),
+	})
+
+	local getLinkButtonStroke = createObject("UIStroke", {
+		Parent = getLinkButton,
+		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		Color = Color3.fromRGB(124, 221, 243),
+		LineJoinMode = Enum.LineJoinMode.Miter,
+		Thickness = 0.7,
+		Transparency = 0.1,
+	})
+
+	local linkIcon = createObject("ImageButton", {
+		Name = "link",
+		Parent = getLinkButton,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundTransparency = 1,
+		Position = UDim2.new(0.9154, 0, 0.5, 0),
+		Size = UDim2.new(0, 10, 0, 10),
+		ZIndex = 2,
+		Image = "rbxassetid://3926305904",
+		ImageRectOffset = Vector2.new(164, 404),
+		ImageRectSize = Vector2.new(36, 36),
+	})
+
+	local getLinkPadding = createObject("UIPadding", {Parent = getLinkButton, PaddingRight = UDim.new(0, 15)})
+
+	local lockIcon = createObject("ImageButton", {
+		Name = "lock",
+		Parent = mainFrame,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundTransparency = 1,
+		Position = UDim2.new(0.6135, 0, 0.4432, 0),
+		Size = UDim2.new(0, 11, 0, 11),
+		ZIndex = 2,
+		Image = "rbxassetid://3926305904",
+		ImageRectOffset = Vector2.new(4, 684),
+		ImageRectSize = Vector2.new(36, 36),
+		ImageTransparency = 0.66,
 	})
 
 	local cancelButton = createObject("TextButton", {
 		Parent = mainFrame,
 		BackgroundColor3 = Color3.fromRGB(153, 88, 88),
-		Position = UDim2.new(0.064, 0, 0.834, 0),
+		BorderColor3 = Color3.fromRGB(0, 0, 0),
+		BorderSizePixel = 0,
+		Position = UDim2.new(0.064, 0, 0.8338, 0),
 		Size = UDim2.new(0, 63, 0, 21),
 		AutoButtonColor = false,
 		Font = Enum.Font.Gotham,
@@ -157,10 +255,12 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 			Weight = Enum.FontWeight.Regular,
 			Style = Enum.FontStyle.Normal
 		},
+		RichText = true,
 		Text = "CANCEL",
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 	})
-	createObject("UIStroke", {
+
+	local cancelButtonStroke = createObject("UIStroke", {
 		Parent = cancelButton,
 		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
 		Color = Color3.fromRGB(255, 151, 151),
@@ -168,64 +268,119 @@ function WhitelistCreate(titleText, descriptionText, linkValue)
 		Thickness = 0.7,
 	})
 
-	local function tweenObject(object, easingStyle, time, easingDirection, properties)
-		game.TweenService:Create(object, TweenInfo.new(time, easingStyle, easingDirection), properties):Play()
+	local cancelButtonPadding = createObject("UIPadding", {Parent = cancelButton, PaddingRight = UDim.new(0, 10)})
+
+	local closeIcon = createObject("ImageButton", {
+		Name = "close",
+		Parent = cancelButton,
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		LayoutOrder = 5,
+		BackgroundTransparency = 1,
+		Position = UDim2.new(0.936, 0, 0.5, 0),
+		Size = UDim2.new(0, 10, 0, 10),
+		ZIndex = 2,
+		Image = "rbxassetid://3926305904",
+		ImageRectOffset = Vector2.new(284, 4),
+		ImageRectSize = Vector2.new(24, 24),
+	})
+
+	local function tweenObject(target, easingStyle, duration, easingDirection, properties)
+		game.TweenService:Create(target, TweenInfo.new(duration, easingStyle, easingDirection), properties):Play()
 	end
 
 	local httpRequest = (syn and syn.request) or (http and http.request) or http_request
-	local function getRequest(url)
+
+	local function getUrlBody(url)
 		return httpRequest({
 			Url = url,
 			Method = "GET",
-			Headers = { ["Content-Type"] = "application/json" },
+			Headers = {["Content-Type"] = "application/json"},
 		}).Body
 	end
 
-	local function validateKey(key)
-		key = key .. "W"
+	local function isKeyValid(key)
+		key = key .. 'W'
 		key = tostring(key):sub(1, 36)
-		local response = game.HttpService:JSONDecode(getRequest("https://redirect-api.work.ink/tokenValid/" .. key))
-		return response.valid
+		local decoded = game.HttpService:JSONDecode(getUrlBody('https://redirect-api.work.ink/tokenValid/' .. key))
+		return decoded.valid
 	end
 
-	local function playSound(soundId)
+	local function playClickEffect(parent)
+		parent.ClipsDescendants = true
+		local effectFrame = createObject("Frame", {
+			Parent = parent,
+			BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+			BackgroundTransparency = 0.8,
+			BorderColor3 = Color3.fromRGB(0, 0, 0),
+			BorderSizePixel = 0,
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			Position = UDim2.new(0.5, 0, 0.5, 0),
+			Size = UDim2.new(0, 0, 0, 0),
+		})
+		local effectCorner = createObject("UICorner", {Parent = effectFrame, CornerRadius = UDim.new(1, 0)})
+		tweenObject(effectFrame, Enum.EasingStyle.Circular, 1, Enum.EasingDirection.Out, {Size = UDim2.new(0, 100, 0, 100)})
+		tweenObject(effectFrame, Enum.EasingStyle.Circular, 0.5, Enum.EasingDirection.Out, {BackgroundTransparency = 1})
+	end
+
+	local function shakeFrame(frame)
+		local originalPos = frame.Position
+		tweenObject(frame, Enum.EasingStyle.Elastic, 0.4, Enum.EasingDirection.InOut, {Position = UDim2.new(0.415, 0, 0.5, 0)})
+		tweenObject(frame, Enum.EasingStyle.Circular, 0.3, Enum.EasingDirection.Out, {Size = UDim2.new(0, 316, 0, 209)})
+		wait(0.1)
+		tweenObject(frame, Enum.EasingStyle.Elastic, 0.4, Enum.EasingDirection.InOut, {Position = UDim2.new(0.59, 0, 0.5, 0)})
+		wait(0.1)
+		tweenObject(frame, Enum.EasingStyle.Circular, 0.3, Enum.EasingDirection.Out, {Size = UDim2.new(0, 326, 0, 229)})
+		tweenObject(frame, Enum.EasingStyle.Circular, 0.2, Enum.EasingDirection.Out, {Position = originalPos})
+	end
+
+	local function playSound(assetId)
 		local sound = Instance.new("Sound")
 		sound.Parent = game.SoundService
-		sound.SoundId = "rbxassetid://" .. soundId
+		sound.SoundId = "rbxassetid://" .. assetId
 		sound.PlayOnRemove = true
 		sound:Destroy()
 	end
 
 	local function closeGui()
-		tweenObject(mainFrame, Enum.EasingStyle.Circular, 0.3, Enum.EasingDirection.Out, {
-			Size = UDim2.new(0, 0, 0, 0)
-		})
+		tweenObject(mainFrame, Enum.EasingStyle.Circular, 0.3, Enum.EasingDirection.Out, {Size = UDim2.new(0, 0, 0, 0)})
 		wait(0.3)
-		screenGui:Destroy()
+		mainGui:Destroy()
 	end
 
-	tweenObject(mainFrame, Enum.EasingStyle.Circular, 0.3, Enum.EasingDirection.Out, {
-		Size = UDim2.new(0, 326, 0, 229)
-	})
+	-- Animate GUI on open
+	tweenObject(mainFrame, Enum.EasingStyle.Circular, 0.3, Enum.EasingDirection.Out, {Size = UDim2.new(0, 326, 0, 229)})
 	playSound(8379220604)
+
+	local Whitelisted = false
 
 	loginButton.MouseButton1Down:Connect(function()
 		playSound(7433801607)
+		playClickEffect(loginButton)
 		wait(0.2)
-		if keyBox.Text:len() == 36 and validateKey(keyBox.Text) then
+		if keyInput.Text:len() == 36 and isKeyValid(keyInput.Text) then
 			Whitelisted = true
 			playSound(3422389728)
 			wait(0.2)
 			closeGui()
 		else
 			playSound(654933750)
+			shakeFrame(mainFrame)
 		end
 	end)
 
 	cancelButton.MouseButton1Down:Connect(function()
+		playClickEffect(cancelButton)
 		playSound(1524543584)
 		closeGui()
 	end)
+
+	getLinkButton.MouseButton1Down:Connect(function()
+		playSound(7433801607)
+		playClickEffect(getLinkButton)
+		setclipboard(tostring(clipboardText))
+	end)
+
+	repeat wait() until Whitelisted
 end
 
 return WhitelistCreate
