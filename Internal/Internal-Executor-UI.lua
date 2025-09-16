@@ -4,6 +4,7 @@
 
 -- Instances:
 
+local CoreGui = game:GetService("StarterGui")
 local FakeInternal = Instance.new("ScreenGui")
 local Dim = Instance.new("Frame")
 local Executor = Instance.new("CanvasGroup")
@@ -135,6 +136,14 @@ local UIPadding_11 = Instance.new("UIPadding")
 
 if syn then
 	syn.protect_gui(FakeInternal)
+end
+
+local function notify(title, text, duration)
+    CoreGui:SetCore("SendNotification", {
+        Title = title,
+        Text = text,
+        Duration = duration or 5
+    })
 end
 
 --Properties:
@@ -1981,4 +1990,5 @@ local function NYMIRF_fake_script() -- ScriptHub.ScriptHubScript
 	end)
 	PersonalItems.Position = Right
 end
+notify("Internal", "loaded successfully.", 3.5)
 coroutine.wrap(NYMIRF_fake_script)()
