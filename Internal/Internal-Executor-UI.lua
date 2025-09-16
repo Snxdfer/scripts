@@ -1,3 +1,4 @@
+-- UI Toggle Keybind is: K
 -- Gui to Lua
 -- Version: 3.3
 
@@ -1332,40 +1333,31 @@ local function SIPZBJ_fake_script() -- FakeInternal.MainScript
 			end
 		end
 	end
--- reemplaza la función BindToggle existente y la llamada BindToggle(Enum.KeyCode.B)
-local CurrentBind = Enum.KeyCode.B -- valor por defecto (B)
+
+local CurrentBind = Enum.KeyCode.K
 
 local function BindToggle(key)
-    -- key puede venir como Enum.KeyCode.B o como nombre; asume Enum
     CurrentBind = key
     ContextActionService:UnbindAction(ActionName)
     ContextActionService:BindAction(ActionName, ToggleUI, true, key)
 
-    -- opcional: configurar botón táctil si está en móvil
     if UserInputService.TouchEnabled then
         local ActionButton = ContextActionService:GetButton(ActionName)
         ContextActionService:SetTitle(ActionName, "Internal UI")
         ContextActionService:SetPosition(ActionName, UDim2.new(1, -220, -1, 5))
         ActionButton.Size = UDim2.fromOffset(80, 80)
     end
-
-    print(("BindToggle: bind establecido a %s"):format(tostring(key))) -- debug
 end
 
--- Listener de emergencia: escucha directamente teclado (fallback si ContextActionService no funciona)
 UserInputService.InputEnded:Connect(function(input, gameProcessed)
     if gameProcessed then return end
     if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == CurrentBind then
-        -- llama a ToggleUI como si ContextActionService lo hubiera hecho
         ToggleUI(ActionName, Enum.UserInputState.End, input)
-        print("UserInputService: tecla detectada, toggle ejecutado") -- debug
     end
 end)
 
--- finalmente, establece el bind inicial (como antes)
-BindToggle(Enum.KeyCode.B)
+BindToggle(Enum.KeyCode.K)
 
--- expone la función para que el Settings siga llamando shared.FakeInternal.BindToggle(...)
 shared.FakeInternal.BindToggle = BindToggle
 
 end
@@ -1384,14 +1376,16 @@ local function WJDT_fake_script() -- Buttons_2.ButtonsScript_Console
 	
 	-- CONSOLE SETTINGS
 	local SettingChanged = Instance.new("BindableEvent")
-	local Console = setmetatable({
-		Check = false,
-		AutoScroll = false
-	}, {
-		__newindex = function(...)
-			SettingChanged:Fire(...)
-		end
-	})
+    local Console = setmetatable({
+	    Check = false,
+	    AutoScroll = false
+    }, {
+	   __newindex = function(tbl, key, value)
+		   rawset(tbl, key, value)
+		   SettingChanged:Fire(tbl, key, value)
+	    end
+    })
+
 	
 	local Utils = shared.FakeInternal.Console
 	
