@@ -1,71 +1,73 @@
-local L_1_ = {
+local UIManager = {}
 
-}
-
-local function L_2_func(L_6_arg0, L_7_arg1)
-	return L_6_arg0[L_7_arg1] ~= nil
+local function hasKey(tableObj, key)
+	return tableObj[key] ~= nil
 end
-local function L_3_func(L_8_arg0)
-	local L_9_ = math.floor(L_8_arg0 / 31104000)
-	local L_10_ = L_8_arg0 % 31104000
-	local L_11_ = math.floor(L_10_ / 2592000)
-	L_10_ = L_10_ % 2592000
-	local L_12_ = math.floor(L_10_ / 604800)
-	L_10_ = L_10_ % 604800
-	local L_13_ = math.floor(L_10_ / 86400)
-	L_10_ = L_10_ % 86400
-	local L_14_ = math.floor(L_10_ / 3600)
-	L_10_ = L_10_ % 3600
-	local L_15_ = math.floor(L_10_ / 60)
-	L_10_ = L_10_ % 60
-	local L_16_ = L_10_
-	if L_9_ ~= 0 then
-		return L_9_ .. ' year' .. (L_9_ > 1 and 's' or '') .. ' ago'
-	elseif L_11_ ~= 0 then
-		return L_11_ .. ' month' .. (L_11_ > 1 and 's' or '') .. ' ago'
-	elseif L_12_ ~= 0 then
-		return L_12_ .. ' week' .. (week > 1 and 's' or '') .. ' ago'
-	elseif L_14_ ~= 0 then
-		return L_14_ .. ' hour' .. (L_14_ > 1 and 's' or '') .. ' ago'
-	elseif L_15_ ~= 0 then
-		return L_15_ .. ' minute' .. (L_15_ > 1 and 's' or '') .. ' ago'
-	elseif L_16_ ~= 0 then
-		return L_16_ .. ' second' .. (L_16_ > 1 and 's' or '') .. ' ago'
-	elseif L_13_ ~= 0 then
-		return L_13_ .. ' day' .. (L_13_ > 1 and 's' or '') .. ' ago'
+
+local function timeAgo(seconds)
+	local years = math.floor(seconds / 31104000)
+	local remainder = seconds % 31104000
+	local months = math.floor(remainder / 2592000)
+	remainder = remainder % 2592000
+	local weeks = math.floor(remainder / 604800)
+	remainder = remainder % 604800
+	local days = math.floor(remainder / 86400)
+	remainder = remainder % 86400
+	local hours = math.floor(remainder / 3600)
+	remainder = remainder % 3600
+	local minutes = math.floor(remainder / 60)
+	remainder = remainder % 60
+	local secs = remainder
+
+	if years ~= 0 then
+		return years .. ' year' .. (years > 1 and 's' or '') .. ' ago'
+	elseif months ~= 0 then
+		return months .. ' month' .. (months > 1 and 's' or '') .. ' ago'
+	elseif weeks ~= 0 then
+		return weeks .. ' week' .. (week > 1 and 's' or '') .. ' ago'
+	elseif hours ~= 0 then
+		return hours .. ' hour' .. (hours > 1 and 's' or '') .. ' ago'
+	elseif minutes ~= 0 then
+		return minutes .. ' minute' .. (minutes > 1 and 's' or '') .. ' ago'
+	elseif secs ~= 0 then
+		return secs .. ' second' .. (secs > 1 and 's' or '') .. ' ago'
+	elseif days ~= 0 then
+		return days .. ' day' .. (days > 1 and 's' or '') .. ' ago'
 	end
 end
-local function L_4_func(L_17_arg0, L_18_arg1, L_19_arg2)
-	game.TweenService:Create(L_17_arg0, TweenInfo.new(L_18_arg1, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), L_19_arg2):Play()
+
+local function tween(object, duration, properties)
+	game.TweenService:Create(object, TweenInfo.new(duration, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), properties):Play()
 end
-function createObject(L_20_arg0, L_21_arg1)
-	local L_22_ = Instance.new(L_20_arg0)
-	local L_23_
-	for L_24_forvar0, L_25_forvar1 in pairs(L_21_arg1) do
-		if L_24_forvar0 ~= "Parent" then
-			L_22_[L_24_forvar0] = L_25_forvar1
+
+function createObject(className, properties)
+	local newInstance = Instance.new(className)
+	local parent
+	for property, value in pairs(properties) do
+		if property ~= "Parent" then
+			newInstance[property] = value
 		else
-			L_23_ = L_25_forvar1
+			parent = value
 		end
 	end
-	L_22_.Parent = L_23_
-	return L_22_
+	newInstance.Parent = parent
+	return newInstance
 end
 
 
-local L_5_ = createObject("ScreenGui", {
+local screenGui = createObject("ScreenGui", {
 	Name = "Core",
 	Parent = game.CoreGui,
 })
-function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
-	local L_28_ = {
+function UIManager:CreateWindow(title, callback)
+	local window = {
 		Created = 0,
 		Selection = nil
 	}
 
-	local L_29_ = createObject("Frame", {
+	local mainFrame = createObject("Frame", {
 		Name = "Main",
-		Parent = L_5_,
+		Parent = screenGui,
 		ClipsDescendants = true,
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		BackgroundColor3 = Color3.fromRGB(7, 7, 7),
@@ -73,9 +75,9 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		Position = UDim2.new(0.5, 0, 0.5, 0),
 		Size = UDim2.new(0, 0, 0, 0),
 	})
-	local L_30_ = createObject("Frame", {
+	local shadeFrame = createObject("Frame", {
 		Name = "Shade",
-		Parent = L_29_,
+		Parent = mainFrame,
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		BackgroundColor3 = Color3.fromRGB(7, 7, 7),
 		BorderColor3 = Color3.fromRGB(53, 53, 53),
@@ -84,44 +86,44 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		Size = UDim2.new(0, 624, 0, 390),
 		ZIndex = 10,
 	})
-	local L_31_ = createObject("Frame", {
+	local loadingBar = createObject("Frame", {
 		Name = "LDBG",
-		Parent = L_29_,
+		Parent = mainFrame,
 		BackgroundColor3 = Color3.fromRGB(26, 26, 26),
 		Position = UDim2.new(0.322, 0, 0.26315799355506897, 0),
 		Size = UDim2.new(0, 388, 0, 35),
 	})
-	local L_32_ = createObject("UICorner", {
+	local loadingBarCorner = createObject("UICorner", {
 		Name = "UICorner69",
-		Parent = L_31_,
+		Parent = loadingBar,
 		CornerRadius = UDim.new(0, 6),
 	})
-	local L_33_ = createObject("Frame", {
+	local splashFrame = createObject("Frame", {
 		Name = "SPLASH",
-		Parent = L_31_,
+		Parent = loadingBar,
 		BorderSizePixel = 0,
 		BackgroundColor3 = Color3.fromRGB(170, 170, 170),
 		Size = UDim2.new(0, 0, 0, 35),
 	})
-	local L_34_ = createObject("UICorner", {
+	local splashCorner = createObject("UICorner", {
 		Name = "UICorner70",
-		Parent = L_33_,
+		Parent = splashFrame,
 		CornerRadius = UDim.new(0, 6),
 	})
-	local L_35_ = createObject("UIGradient", {
-		Parent = L_33_,
+	local splashGradient = createObject("UIGradient", {
+		Parent = splashFrame,
 		Color = ColorSequence.new{
 			ColorSequenceKeypoint.new(0.00, Color3.fromRGB(1, 180, 213)),
 			ColorSequenceKeypoint.new(1.00, Color3.fromRGB(3, 227, 122))
 		},
 	})
-	local L_36_ = createObject("UICorner", {
-		Parent = L_29_,
+	local mainCorner = createObject("UICorner", {
+		Parent = mainFrame,
 		CornerRadius = UDim.new(0, 6),
 	})
-	local L_37_ = createObject("ImageButton", {
+	local cloudButton = createObject("ImageButton", {
 		Name = "Cloud",
-		Parent = L_29_,
+		Parent = mainFrame,
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		BackgroundTransparency = 1,
 		Position = UDim2.new(0.093952976167202, 0, 0.09986995160579681, 0),
@@ -131,30 +133,30 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		ImageRectOffset = Vector2.new(324, 764),
 		ImageRectSize = Vector2.new(36, 36),
 	})
-	local L_38_ = createObject("UIGradient", {
-		Parent = L_37_,
+	local cloudGradient = createObject("UIGradient", {
+		Parent = cloudButton,
 		Color = ColorSequence.new{
 			ColorSequenceKeypoint.new(0.00, Color3.fromRGB(1, 180, 213)),
 			ColorSequenceKeypoint.new(1.00, Color3.fromRGB(3, 227, 122))
 		},
 	})
-	local L_39_ = createObject("TextLabel", {
+	local titleLabel = createObject("TextLabel", {
 		Name = "Title",
-		Parent = L_29_,
+		Parent = mainFrame,
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BackgroundTransparency = 1,
 		Position = UDim2.new(0.1465577334165573, 0, 0.062476783990859985, 0),
 		Size = UDim2.new(0, 193, 0, 35),
 		Font = Enum.Font.Gotham,
 		RichText = true,
-		Text = "<b>" .. L_26_arg0 .. "</b>",
+		Text = "<b>" .. title .. "</b>",
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 		TextSize = 15,
 		TextXAlignment = Enum.TextXAlignment.Left,
 	})
-	local L_40_ = createObject("Frame", {
+	local contentFrame = createObject("Frame", {
 		Name = "Content",
-		Parent = L_29_,
+		Parent = mainFrame,
 		Visible = false,
 		AnchorPoint = Vector2.new(0.5, 0),
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
@@ -163,75 +165,75 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		Size = UDim2.new(0, 547, 0, 345),
 		Transparency = 1,
 	})
-	local L_41_ = createObject("Frame", {
+	local selectGameFrame = createObject("Frame", {
 		Name = "SelectGame",
-		Parent = L_40_,
+		Parent = contentFrame,
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BackgroundTransparency = 1,
 		Position = UDim2.new(0, 0, 0.08405797183513641, 0),
 		Size = UDim2.new(0.5, 0, -0.08405797183513641, 345),
 		Transparency = 1,
 	})
-	local L_42_ = createObject("UIListLayout", {
-		Parent = L_41_,
+	local selectGameListLayout = createObject("UIListLayout", {
+		Parent = selectGameFrame,
 		SortOrder = Enum.SortOrder.LayoutOrder,
 		Padding = UDim.new(0, 10),
 	})
 
-	local L_43_ = createObject("UIPadding", {
-		Parent = L_41_,
+	local selectGamePadding = createObject("UIPadding", {
+		Parent = selectGameFrame,
 		PaddingLeft = UDim.new(0, 5),
 		PaddingRight = UDim.new(0, 5),
 	})
-	local L_44_ = createObject("Frame", {
+	local detailsFrame = createObject("Frame", {
 		Name = "Details",
-		Parent = L_40_,
+		Parent = contentFrame,
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BackgroundTransparency = 1,
 		Position = UDim2.new(0.5, 0, 0, 0),
 		Size = UDim2.new(0.5, 0, 0, 345),
 		Transparency = 1,
 	})
-	local L_45_ = createObject("UIListLayout", {
-		Parent = L_44_,
+	local detailsListLayout = createObject("UIListLayout", {
+		Parent = detailsFrame,
 		Padding = UDim.new(0, 10),
 	})
-	local L_46_ = createObject("UIPadding", {
-		Parent = L_44_,
+	local detailsPadding = createObject("UIPadding", {
+		Parent = detailsFrame,
 		PaddingLeft = UDim.new(0, 5),
 		PaddingRight = UDim.new(0, 5),
 	})
-	local L_47_ = createObject("ImageButton", {
+	local artworkButton = createObject("ImageButton", {
 		Name = "AImage",
-		Parent = L_44_,
+		Parent = detailsFrame,
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		Size = UDim2.new(1, 0, 0.0811847597360611, 100),
 		Image = "http://www.roblox.com/asset/?id=8899558070",
 	})
-	local L_48_ = createObject("UICorner", {
-		Parent = L_47_,
+	local artworkCorner = createObject("UICorner", {
+		Parent = artworkButton,
 		CornerRadius = UDim.new(0, 7),
 	})
-	local L_49_ = createObject("Frame", {
-		Parent = L_47_,
+	local artworkOverlay = createObject("Frame", {
+		Parent = artworkButton,
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BackgroundTransparency = 0.3499999940395355,
 		Size = UDim2.new(1, 0, 1, 0),
 		Transparency = 0.3499999940395355,
 	})
-	local L_50_ = createObject("UICorner", {
-		Parent = L_49_,
+	local overlayCorner = createObject("UICorner", {
+		Parent = artworkOverlay,
 		CornerRadius = UDim.new(0, 7),
 	})
-	local L_51_ = createObject("UIGradient", {
-		Parent = L_49_,
+	local overlayGradient = createObject("UIGradient", {
+		Parent = artworkOverlay,
 		Color = ColorSequence.new{
 			ColorSequenceKeypoint.new(0.00, Color3.fromRGB(1, 180, 213)),
 			ColorSequenceKeypoint.new(1.00, Color3.fromRGB(3, 227, 122))
 		},
 	})
-	local L_52_ = createObject("TextLabel", {
-		Parent = L_47_,
+	local artworkTextLabel = createObject("TextLabel", {
+		Parent = artworkButton,
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BackgroundTransparency = 1,
 		Position = UDim2.new(0.0759013295173645, 0, 0.7128929495811462, 0),
@@ -243,9 +245,9 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		TextSize = 14,
 		TextXAlignment = Enum.TextXAlignment.Left,
 	})
-	local L_53_ = createObject("TextButton", {
+	local loadButton = createObject("TextButton", {
 		Name = "YLoad",
-		Parent = L_44_,
+		Parent = detailsFrame,
 		BackgroundColor3 = Color3.fromRGB(118, 118, 118),
 		Position = UDim2.new(0, 0, 0.6724890470504761, 0),
 		Size = UDim2.new(1, 0, -0.02028985507786274, 50),
@@ -256,23 +258,23 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 		TextSize = 9,
 	})
-	local L_54_ = createObject("UICorner", {
-		Parent = L_53_,
+	local loadButtonCorner = createObject("UICorner", {
+		Parent = loadButton,
 		CornerRadius = UDim.new(0, 4),
 	})
-	local L_55_ = createObject("UIPadding", {
-		Parent = L_53_,
+	local loadButtonPadding = createObject("UIPadding", {
+		Parent = loadButton,
 	})
-	local L_56_ = createObject("UIGradient", {
-		Parent = L_53_,
+	local loadButtonGradient = createObject("UIGradient", {
+		Parent = loadButton,
 		Color = ColorSequence.new{
 			ColorSequenceKeypoint.new(0.00, Color3.fromRGB(1, 180, 213)),
 			ColorSequenceKeypoint.new(1.00, Color3.fromRGB(3, 227, 122))
 		},
 	})
-	local L_57_ = createObject("ImageButton", {
+	local playImage = createObject("ImageButton", {
 		Name = "Play",
-		Parent = L_53_,
+		Parent = loadButton,
 		AnchorPoint = Vector2.new(0, 0.5),
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BackgroundTransparency = 1,
@@ -280,9 +282,9 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		Size = UDim2.new(0, 11, 0, 11),
 		Image = "rbxassetid://7671465363",
 	})
-	local L_58_ = createObject("TextLabel", {
+	local loadLabel = createObject("TextLabel", {
 		Name = "LoadLabel",
-		Parent = L_53_,
+		Parent = loadButton,
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BackgroundTransparency = 1,
 		Position = UDim2.new(0, 0, -0.09302325546741486, 0),
@@ -292,10 +294,10 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 		TextSize = 11,
 	})
-	local L_59_ = createObject("TextButton", {
+	local statusButton = createObject("TextButton", {
 		Name = "TStatus",
 		RichText = true,
-		Parent = L_44_,
+		Parent = detailsFrame,
 		BackgroundColor3 = Color3.fromRGB(20, 20, 20),
 		Position = UDim2.new(0, 0, 0.40002530813217163, 0),
 		Size = UDim2.new(1, 0, -0.037681158632040024, 50),
@@ -306,25 +308,25 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		TextSize = 11,
 		TextXAlignment = Enum.TextXAlignment.Left,
 	})
-	local L_60_ = createObject("UICorner", {
-		Parent = L_59_,
+	local statusCorner = createObject("UICorner", {
+		Parent = statusButton,
 		CornerRadius = UDim.new(0, 4),
 	})
-	local L_61_ = createObject("UIPadding", {
-		Parent = L_59_,
+	local statusPadding = createObject("UIPadding", {
+		Parent = statusButton,
 		PaddingLeft = UDim.new(0, 20),
 	})
-	local L_62_ = createObject("UIGradient", {
-		Parent = L_59_,
+	local statusGradient = createObject("UIGradient", {
+		Parent = statusButton,
 		Color = ColorSequence.new{
 			ColorSequenceKeypoint.new(0.00, Color3.fromRGB(1, 180, 213)),
 			ColorSequenceKeypoint.new(1.00, Color3.fromRGB(3, 227, 122))
 		},
 		Enabled = false,
 	})
-	local L_63_ = createObject("TextButton", {
+	local lastUpdatedButton = createObject("TextButton", {
 		Name = "XLastUpdated",
-		Parent = L_44_,
+		Parent = detailsFrame,
 		BackgroundColor3 = Color3.fromRGB(20, 20, 20),
 		Position = UDim2.new(-0.10246679186820984, 0, 0.41741660237312317, 0),
 		Size = UDim2.new(1, 0, -0.037681158632040024, 50),
@@ -336,25 +338,25 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		TextSize = 11,
 		TextXAlignment = Enum.TextXAlignment.Left,
 	})
-	local L_64_ = createObject("UICorner", {
-		Parent = L_63_,
+	local lastUpdatedCorner = createObject("UICorner", {
+		Parent = lastUpdatedButton,
 		CornerRadius = UDim.new(0, 4),
 	})
-	local L_65_ = createObject("UIPadding", {
-		Parent = L_63_,
+	local lastUpdatedPadding = createObject("UIPadding", {
+		Parent = lastUpdatedButton,
 		PaddingLeft = UDim.new(0, 20),
 	})
-	local L_66_ = createObject("UIGradient", {
-		Parent = L_63_,
+	local lastUpdatedGradient = createObject("UIGradient", {
+		Parent = lastUpdatedButton,
 		Color = ColorSequence.new{
 			ColorSequenceKeypoint.new(0.00, Color3.fromRGB(1, 180, 213)),
 			ColorSequenceKeypoint.new(1.00, Color3.fromRGB(3, 227, 122))
 		},
 		Enabled = false,
 	})
-	local L_67_ = createObject("TextButton", {
+	local exitButton = createObject("TextButton", {
 		Name = "ZExit",
-		Parent = L_44_,
+		Parent = detailsFrame,
 		BackgroundColor3 = Color3.fromRGB(118, 118, 118),
 		Position = UDim2.new(0, 0, 0.6724890470504761, 0),
 		Size = UDim2.new(1, 0, -0.02028985507786274, 50),
@@ -365,23 +367,23 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 		TextSize = 9,
 	})
-	local L_68_ = createObject("UICorner", {
-		Parent = L_67_,
+	local exitCorner = createObject("UICorner", {
+		Parent = exitButton,
 		CornerRadius = UDim.new(0, 4),
 	})
-	local L_69_ = createObject("UIPadding", {
-		Parent = L_67_,
+	local exitPadding = createObject("UIPadding", {
+		Parent = exitButton,
 	})
-	local L_70_ = createObject("UIGradient", {
-		Parent = L_67_,
+	local exitGradient = createObject("UIGradient", {
+		Parent = exitButton,
 		Color = ColorSequence.new{
 			ColorSequenceKeypoint.new(0.00, Color3.fromRGB(213, 83, 83)),
 			ColorSequenceKeypoint.new(1.00, Color3.fromRGB(227, 34, 34))
 		},
 	})
-	local L_71_ = createObject("TextLabel", {
+	local exitLabel = createObject("TextLabel", {
 		Name = "ExitLabel",
-		Parent = L_67_,
+		Parent = exitButton,
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BackgroundTransparency = 1,
 		Position = UDim2.new(0, 0, -0.09302325546741486, 0),
@@ -391,9 +393,9 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		TextColor3 = Color3.fromRGB(255, 255, 255),
 		TextSize = 11,
 	})
-	local L_72_ = createObject("ImageButton", {
+	local exitImage = createObject("ImageButton", {
 		Name = "X",
-		Parent = L_67_,
+		Parent = exitButton,
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		BackgroundTransparency = 1,
 		LayoutOrder = 5,
@@ -404,8 +406,8 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		ImageRectOffset = Vector2.new(924, 724),
 		ImageRectSize = Vector2.new(36, 36),
 	})
-	local L_73_ = createObject("TextLabel", {
-		Parent = L_40_,
+	local selectLabel = createObject("TextLabel", {
+		Parent = contentFrame,
 		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 		BackgroundTransparency = 1,
 		Position = UDim2.new(0.034721024334430695, 0, -0.0035395524464547634, 0),
@@ -417,40 +419,40 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 		TextSize = 14,
 		TextXAlignment = Enum.TextXAlignment.Left,
 	})
-	L_53_.MouseButton1Down:Connect(function()
-		L_27_arg1(L_28_.Selection)
-		L_28_:Exit()
+	loadButton.MouseButton1Down:Connect(function()
+		callback(window.Selection)
+		window:Exit()
 	end)
-	L_67_.MouseButton1Down:Connect(function()
-		L_28_:Exit()
+	exitButton.MouseButton1Down:Connect(function()
+		window:Exit()
 	end)
 	
 	
-	function L_28_:CreateSelection(L_74_arg0, L_75_arg1)
-		L_28_.Created += 1
-		local L_76_ = createObject("TextButton", {
+	function window:CreateSelection(gameData, unused)
+		window.Created += 1
+		local selectionButton = createObject("TextButton", {
 			Name = "SelectionButton",
-			Parent = L_41_,
+			Parent = selectGameFrame,
 			BackgroundColor3 = Color3.fromRGB(20, 20, 20),
 			Size = UDim2.new(1, 0, -0.017391303554177284, 50),
 			AutoButtonColor = false,
 			Font = Enum.Font.Gotham,
-			Text = L_74_arg0.Name or "New Selection",
+			Text = gameData.Name or "New Selection",
 			TextColor3 = Color3.fromRGB(255, 255, 255),
 			TextSize = 14,
 			TextXAlignment = Enum.TextXAlignment.Left,
 		})
-		local L_77_ = createObject("UICorner", {
-			Parent = L_76_,
+		local selectionCorner = createObject("UICorner", {
+			Parent = selectionButton,
 			CornerRadius = UDim.new(0, 4),
 		})
-		local L_78_ = createObject("UIPadding", {
-			Parent = L_76_,
+		local selectionPadding = createObject("UIPadding", {
+			Parent = selectionButton,
 			PaddingLeft = UDim.new(0, 50),
 		})
-		local L_79_ = createObject("ImageButton", {
+		local doneAllButton = createObject("ImageButton", {
 			Name = "done_all",
-			Parent = L_76_,
+			Parent = selectionButton,
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			BackgroundTransparency = 1,
 			LayoutOrder = 7,
@@ -461,25 +463,25 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 			ImageRectOffset = Vector2.new(4, 444),
 			ImageRectSize = Vector2.new(36, 36),
 		})
-		local L_80_ = createObject("UIGradient", {
-			Parent = L_79_,
+		local doneAllGradient = createObject("UIGradient", {
+			Parent = doneAllButton,
 			Color = ColorSequence.new{
 				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(1, 180, 213)),
 				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(3, 227, 122))
 			},
 		})
-		local L_81_ = createObject("UIGradient", {
-			Parent = L_76_,
+		local selectionGradient = createObject("UIGradient", {
+			Parent = selectionButton,
 			Enabled = false,
 			Color = ColorSequence.new{
 				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(1, 180, 213)),
 				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(3, 227, 122))
 			},
 		})
-		local L_82_ = createObject("ImageButton", {
+		local checkedCircle = createObject("ImageButton", {
 			Name = "CheckedCircle",
 			ImageTransparency = 1,
-			Parent = L_76_,
+			Parent = selectionButton,
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			BackgroundTransparency = 1,
 			LayoutOrder = 17,
@@ -490,9 +492,9 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 			ImageRectOffset = Vector2.new(784, 420),
 			ImageRectSize = Vector2.new(48, 48),
 		})
-		local L_83_ = createObject("ImageButton", {
+		local circle = createObject("ImageButton", {
 			Name = "Circle",
-			Parent = L_76_,
+			Parent = selectionButton,
 			ImageTransparency = 0,
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			BackgroundTransparency = 1,
@@ -504,149 +506,149 @@ function L_1_:CreateWindow(L_26_arg0, L_27_arg1)
 			ImageRectOffset = Vector2.new(324, 964),
 			ImageRectSize = Vector2.new(36, 36),
 		})
-		local L_84_ = createObject("UIGradient", {
-			Parent = L_82_,
+		local checkedGradient = createObject("UIGradient", {
+			Parent = checkedCircle,
 			Color = ColorSequence.new{
 				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(1, 180, 213)),
 				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(3, 227, 122))
 			},
 		})
-		local function L_85_func()
-			for L_86_forvar0, L_87_forvar1 in pairs(L_41_:GetDescendants()) do
-				if L_87_forvar1:IsA'UIGradient' and L_87_forvar1.Parent.Name ~= "done_all" then
-					L_87_forvar1.Enabled = false
+		local function selectFunc()
+			for _, descendant in pairs(selectGameFrame:GetDescendants()) do
+				if descendant:IsA'UIGradient' and descendant.Parent.Name ~= "done_all" then
+					descendant.Enabled = false
 				end
-				if L_87_forvar1.Name == 'CheckedCircle' then
-					L_4_func(L_87_forvar1, 0.25, {
+				if descendant.Name == 'CheckedCircle' then
+					tween(descendant, 0.25, {
 						ImageTransparency = 1
 					})
 				end
-				if L_87_forvar1.Name == 'Circle' then
-					L_4_func(L_87_forvar1, 0.25, {
+				if descendant.Name == 'Circle' then
+					tween(descendant, 0.25, {
 						ImageTransparency = 0
 					})
 				end
 			end
-			L_4_func(L_83_, 0.25, {
+			tween(circle, 0.25, {
 				ImageTransparency = 1
 			})
-			L_4_func(L_82_, 0.25, {
+			tween(checkedCircle, 0.25, {
 				ImageTransparency = 0
 			})
-			L_81_.Enabled = true
-			L_80_.Enabled = true
-			L_84_.Enabled = true
-			L_28_.Selection = L_74_arg0.Flag
-			L_59_.Text = "Currently <b>" .. L_74_arg0.Status .. "</b>"
-			L_52_.Text = (L_74_arg0.Name or 'Game')
-			L_47_.Image = (L_74_arg0.Image or '')
-			L_63_.Text = "Last Updated <b>" .. (L_3_func(os.time() - L_74_arg0.UpdateDate) or 'Never') .. "</b>"
+			selectionGradient.Enabled = true
+			doneAllGradient.Enabled = true
+			checkedGradient.Enabled = true
+			window.Selection = gameData.Flag
+			statusButton.Text = "Currently <b>" .. gameData.Status .. "</b>"
+			artworkTextLabel.Text = (gameData.Name or 'Game')
+			artworkButton.Image = (gameData.Image or '')
+			lastUpdatedButton.Text = "Last Updated <b>" .. (timeAgo(os.time() - gameData.UpdateDate) or 'Never') .. "</b>"
 		end
-		if L_28_.Created == 1 then
-			L_85_func()
+		if window.Created == 1 then
+			selectFunc()
 		end
-		L_76_.MouseButton1Down:Connect(L_85_func)
-		L_82_.MouseButton1Down:Connect(L_85_func)
-		L_83_.MouseButton1Down:Connect(L_85_func)
-		L_79_.MouseButton1Down:Connect(L_85_func)
+		selectionButton.MouseButton1Down:Connect(selectFunc)
+		checkedCircle.MouseButton1Down:Connect(selectFunc)
+		circle.MouseButton1Down:Connect(selectFunc)
+		doneAllButton.MouseButton1Down:Connect(selectFunc)
         
 	end
-	function L_28_:Exit()
-		L_4_func(L_30_, 0.25, {
+	function window:Exit()
+		tween(shadeFrame, 0.25, {
 			BackgroundTransparency = 0
 		})
-		L_4_func(L_37_, 0.25, {
+		tween(cloudButton, 0.25, {
 			ImageTransparency = 1
 		})
-		L_4_func(L_39_, 0.25, {
+		tween(titleLabel, 0.25, {
 			TextTransparency = 1
 		})
 		wait(0.25)
-		L_40_.Visible = false
-		L_30_.Visible = false
-		L_30_.BackgroundTransparency = 1
-		L_4_func(L_29_, 0.25, {
+		contentFrame.Visible = false
+		shadeFrame.Visible = false
+		shadeFrame.BackgroundTransparency = 1
+		tween(mainFrame, 0.25, {
 			Size = UDim2.new(0, 624, 0, 76)
 		})
-		L_39_.Position = UDim2.new(0.13533978164196014, 0, 0, 0)
-		L_37_.Position = UDim2.new(0.07472220808267593, 0, 0.49460679292678833, 0)
-		L_4_func(L_39_, 0.25, {
+		titleLabel.Position = UDim2.new(0.13533978164196014, 0, 0, 0)
+		cloudButton.Position = UDim2.new(0.07472220808267593, 0, 0.49460679292678833, 0)
+		tween(titleLabel, 0.25, {
 			Size = UDim2.new(0, 193, 0, 76)
 		})
 		wait(0.25)
-		L_4_func(L_37_, 0.25, {
+		tween(cloudButton, 0.25, {
 			ImageTransparency = 0
 		})
-		L_4_func(L_39_, 0.25, {
+		tween(titleLabel, 0.25, {
 			TextTransparency = 0
 		})
 		wait(1)
-		L_30_.Visible = true
-		L_4_func(L_30_, 0.25, {
+		shadeFrame.Visible = true
+		tween(shadeFrame, 0.25, {
 			BackgroundTransparency = 0
 		})
 		wait(0.25)
-		L_4_func(L_29_, 0.25, {
+		tween(mainFrame, 0.25, {
 			Size = UDim2.new(0, 0, 0, 0)
 		})
 		wait(0.25)
-		L_5_:Destroy()
+		screenGui:Destroy()
 	end
-	function L_28_:Initiate()
-		L_30_.Visible = true
-		L_40_.Visible = false
-		L_4_func(L_29_, 0.25, {
+	function window:Initiate()
+		shadeFrame.Visible = true
+		contentFrame.Visible = false
+		tween(mainFrame, 0.25, {
 			Size = UDim2.new(0, 624, 0, 76)
 		})
-		L_4_func(L_37_, 0.15, {
+		tween(cloudButton, 0.15, {
 			Position = UDim2.new(0.07472220808267593, 0, 0.49460679292678833, 0)
 		})
-		L_4_func(L_39_, 0.25, {
+		tween(titleLabel, 0.25, {
 			Position = UDim2.new(0.13533978164196014, 0, 0, 0)
 		})
-		L_4_func(L_39_, 0.25, {
+		tween(titleLabel, 0.25, {
 			Size = UDim2.new(0, 193, 0, 76)
 		})
 		wait(0.25)
-		L_4_func(L_30_, 0.25, {
+		tween(shadeFrame, 0.25, {
 			BackgroundTransparency = 1
 		})
 		wait(1)
 		game:GetService('ContentProvider'):PreloadAsync({
-			L_5_
+			screenGui
 		})
 		repeat
 			wait()
 		until game:GetService('ContentProvider').RequestQueueSize <= 0
-		L_4_func(L_33_, 0.5, {
+		tween(splashFrame, 0.5, {
 			Size =  UDim2.new(1, 0, 0, 35)
 		})
 		wait(0.4)
-		L_4_func(L_33_, 0.25, {
+		tween(splashFrame, 0.25, {
 			BackgroundTransparency = 1
 		})
-		L_4_func(L_31_, 0.25, {
+		tween(loadingBar, 0.25, {
 			BackgroundTransparency = 1
 		})
-		L_4_func(L_37_, 0.15, {
+		tween(cloudButton, 0.15, {
 			Position = UDim2.new(0.093952976167202, 0, 0.09986995160579681, 0)
 		})
-		L_4_func(L_39_, 0.25, {
+		tween(titleLabel, 0.25, {
 			Position = UDim2.new(0.1465577334165573, 0, 0.062476783990859985, 0)
 		})
-		L_4_func(L_39_, 0.25, {
+		tween(titleLabel, 0.25, {
 			Size = UDim2.new(0, 193, 0, 35)
 		})
-		L_4_func(L_29_, 0.25, {
+		tween(mainFrame, 0.25, {
 			Size = UDim2.new(0, 624, 0, 468)
 		})
 		wait(0.25)
-		L_30_.BackgroundTransparency = 0
-		L_40_.Visible = true
-		L_4_func(L_30_, 0.25, {
+		shadeFrame.BackgroundTransparency = 0
+		contentFrame.Visible = true
+		tween(shadeFrame, 0.25, {
 			BackgroundTransparency = 1
 		})
 	end
-	return L_28_
+	return window
 end
-return L_1_
+return UIManager
