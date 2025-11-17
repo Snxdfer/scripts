@@ -10,15 +10,15 @@
 ]]--
 
 if not isfile("AdminNoli.rbxmx") then
-writefile("AdminNoli.rbxmx", game:HttpGet("https://github.com/Snxdfer/scripts/ClientSidedScripts/ForsakenNoliAdmin/raw/refs/heads/main/AdminNoli.rbxmx"))
+writefile("AdminNoli.rbxmx", game:HttpGet("https://github.com/Snxdfer/scripts/raw/refs/heads/main/ClientSidedScripts/ForsakenNoliAdmin/AdminNoli.rbxmx"))
 end
 
-writefile("Admin1.mp3", game:HttpGet("https://github.com/ian49972/smth/raw/refs/heads/main/Admin1.mp3"))
-writefile("Admin2.mp3", game:HttpGet("https://github.com/ian49972/smth/raw/refs/heads/main/Admin2.mp3"))
-writefile("Admin3.mp3", game:HttpGet("https://github.com/ian49972/smth/raw/refs/heads/main/Admin3.mp3"))
-writefile("Chase.mp3", game:HttpGet("https://github.com/ian49972/smth/raw/refs/heads/main/Chase.mp3"))
-writefile("LMA.mp3", game:HttpGet("https://github.com/ian49972/smth/raw/refs/heads/main/LMA.mp3"))
-writefile("Iron.mp3", game:HttpGet("https://github.com/ian49972/smth/raw/refs/heads/main/Iron.mp3"))
+writefile("Admin1.mp3", game:HttpGet("https://github.com/Snxdfer/scripts/raw/refs/heads/main/ClientSidedScripts/ForsakenNoliAdmin/Admin1.mp3"))
+writefile("Admin2.mp3", game:HttpGet("https://github.com/Snxdfer/scripts/raw/refs/heads/main/ClientSidedScripts/ForsakenNoliAdmin/Admin2.mp3"))
+writefile("Admin3.mp3", game:HttpGet("https://github.com/Snxdfer/scripts/raw/refs/heads/main/ClientSidedScripts/ForsakenNoliAdmin/Admin3.mp3"))
+writefile("Chase.mp3", game:HttpGet("https://github.com/Snxdfer/scripts/raw/refs/heads/main/ClientSidedScripts/ForsakenNoliAdmin/Chase.mp3"))
+writefile("LMA.mp3", game:HttpGet("https://github.com/Snxdfer/scripts/raw/refs/heads/main/ClientSidedScripts/ForsakenNoliAdmin/LMA.mp3"))
+writefile("Iron.mp3", game:HttpGet("https://github.com/Snxdfer/scripts/raw/refs/heads/main/ClientSidedScripts/ForsakenNoliAdmin/Iron.mp3"))
 
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
