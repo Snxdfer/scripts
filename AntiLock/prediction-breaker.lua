@@ -2,7 +2,7 @@ getgenv().Settings = {
     Antilock = true,
     yAxis = 0,
 
-    Keybind = Enum.KeyCode.B,
+    Keybind = Enum.KeyCode.Z,
 
     DesyncMode = false,
     DesyncAngles = 0.1,
