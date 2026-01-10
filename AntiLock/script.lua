@@ -1,4 +1,6 @@
--- // Keybind B to toggle \\--
+-- // Sky Antilock Keybind: C \\--
+-- // Underground Keybind: X \\--
+-- // Prediction Breaker Keybind: Z \\--
 
 -- UI Modules
 local UI_Module = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
